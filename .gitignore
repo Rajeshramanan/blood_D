@@ -1,0 +1,10 @@
+
+# PHP
+vendor/
+composer.lock
+.env
+.idea/
+.vscode/
+*.log
+tmp/
+Thumbs.db
