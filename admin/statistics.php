@@ -1,11 +1,11 @@
 <?php
 
 require_once '../config/db.php';
-include '../includes/header.php';
-
+require_once '../config/base.php';
+session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../login.php");
+    header("Location: " . $base_url . "/login.php");
     exit;
 }
 
@@ -18,6 +18,8 @@ $stmt = $pdo->query("SELECT urgency, COUNT(*) as count FROM blood_requests GROUP
 $urgency_stats = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
 $all_groups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+
+include '../includes/header.php';
 ?>
 
 <div class="container">

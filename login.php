@@ -1,10 +1,19 @@
 <?php
-
 require_once 'config/db.php';
-include 'includes/header.php';
-
+require_once 'config/base.php';
+session_start();
 
 $error = '';
+
+if (isset($_SESSION['user_id'])) {
+    if ($_SESSION['role'] == 'admin') {
+        header("Location: " . $base_url . "/admin/admin_dashboard.php");
+    }
+    else {
+        header("Location: " . $base_url . "/user/dashboard.php");
+    }
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
@@ -24,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['full_name'] = $user['full_name'];
 
             if ($user['role'] == 'admin') {
-                header("Location: admin/admin_dashboard.php");
+                header("Location: " . $base_url . "/admin/admin_dashboard.php");
             }
             else {
-                header("Location: user/dashboard.php");
+                header("Location: " . $base_url . "/user/dashboard.php");
             }
             exit;
         }
@@ -36,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+
+include 'includes/header.php';
 ?>
 
 <div class="form-container">

@@ -1,17 +1,19 @@
 <?php
 
 require_once '../config/db.php';
-include '../includes/header.php';
-
+require_once '../config/base.php';
+session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . $base_url . "/login.php");
     exit;
 }
 
 $stmt = $pdo->prepare("SELECT * FROM blood_requests WHERE requester_id = ? ORDER BY created_at DESC");
 $stmt->execute([$_SESSION['user_id']]);
 $requests = $stmt->fetchAll();
+
+include '../includes/header.php';
 ?>
 
 <div class="container">

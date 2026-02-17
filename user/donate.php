@@ -1,11 +1,11 @@
 <?php
 
 require_once '../config/db.php';
-include '../includes/header.php';
-
+require_once '../config/base.php';
+session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . $base_url . "/login.php");
     exit;
 }
 
@@ -37,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+
+include '../includes/header.php';
 ?>
 
 <div class="form-container">

@@ -4,10 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 // Define base URL to handle relative paths correctly
 // Define base URL to handle relative paths correctly
-$base_url = '';
-if (isset($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false)) {
-    $base_url = '/blood_app';
-}
+require_once __DIR__ . '/../config/base.php';
 
 ?>
 <!DOCTYPE html>

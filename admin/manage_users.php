@@ -1,11 +1,11 @@
 <?php
 
 require_once '../config/db.php';
-include '../includes/header.php';
-
+require_once '../config/base.php';
+session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../login.php");
+    header("Location: " . $base_url . "/login.php");
     exit;
 }
 
@@ -20,6 +20,8 @@ if (isset($_GET['delete_id'])) {
 // Fetch Users
 $stmt = $pdo->query("SELECT id, full_name, email, phone, role, created_at FROM users WHERE role = 'user' ORDER BY created_at DESC");
 $users = $stmt->fetchAll();
+
+include '../includes/header.php';
 ?>
 
 <div class="container">

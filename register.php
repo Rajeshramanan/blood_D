@@ -1,11 +1,20 @@
 <?php
-
 require_once 'config/db.php';
-include 'includes/header.php';
-
+require_once 'config/base.php';
+session_start();
 
 $error = '';
 $success = '';
+
+if (isset($_SESSION['user_id'])) {
+    if ($_SESSION['role'] == 'admin') {
+        header("Location: " . $base_url . "/admin/admin_dashboard.php");
+    }
+    else {
+        header("Location: " . $base_url . "/user/dashboard.php");
+    }
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $full_name = trim($_POST['full_name']);
@@ -29,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $pdo->prepare("INSERT INTO users (full_name, email, phone, password, role) VALUES (:full_name, :email, :phone, :password, 'user')");
 
             if ($stmt->execute(['full_name' => $full_name, 'email' => $email, 'phone' => $phone, 'password' => $hashed_password])) {
-                $success = "Registration successful! You can now login.";
+                $success = "Registration successful! You can now <a href='login.php'>login</a>.";
             }
             else {
                 $error = "Something went wrong. Please try again.";
@@ -37,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+
+include 'includes/header.php';
 ?>
 
 <div class="form-container">

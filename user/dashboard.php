@@ -1,13 +1,14 @@
 <?php
-
 require_once '../config/db.php';
-include '../includes/header.php';
-
+require_once '../config/base.php';
+session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
-    header("Location: ../login.php");
+    header("Location: " . $base_url . "/login.php");
     exit;
 }
+
+include '../includes/header.php';
 
 $user_id = $_SESSION['user_id'];
 

@@ -2,11 +2,11 @@
 <?php
 
 require_once '../config/db.php';
-include '../includes/header.php';
-
+require_once '../config/base.php';
+session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . $base_url . "/login.php");
     exit;
 }
 
@@ -24,6 +24,8 @@ $stmt2 = $pdo->prepare("
 ");
 $stmt2->execute([$_SESSION['user_id']]);
 $responses = $stmt2->fetchAll();
+
+include '../includes/header.php';
 ?>
 
 <div class="container">
