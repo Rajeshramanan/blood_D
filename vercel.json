@@ -4,6 +4,24 @@
         {
             "src": "**/*.php",
             "use": "vercel-php@0.7.1"
+        },
+        {
+            "src": "**/*.css",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "**/*.js",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "**/*.{jpg,jpeg,png,gif,svg,ico}",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/$1"
         }
     ]
 }
