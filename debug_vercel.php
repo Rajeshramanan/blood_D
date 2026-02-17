@@ -25,16 +25,32 @@ else {
 echo "<h2>3. Database Connection</h2>";
 
 $db_host = trim(getenv('DB_HOST') ?: 'localhost');
-echo "DB_HOST Env Var: " . ($db_host ? "SET (Length: " . strlen($db_host) . ")" : "NOT SET") . "<br>";
-echo "Resolving Host '$db_host': ";
+$db_port = trim(getenv('DB_PORT') ?: '3306');
+
+echo "DB_HOST: $db_host <br>";
+echo "DB_PORT: $db_port <br>";
+
+// A. DNS Check
+echo "<h3>A. DNS Resolution</h3>";
 $ip = gethostbyname($db_host);
-if ($ip !== $db_host) {
-    echo "<span style='color:green'>RESOLVED to $ip</span><br>";
+echo "gethostbyname(): " . ($ip !== $db_host ? "<span style='color:green'>$ip</span>" : "<span style='color:red'>FAILED (Returned Hostname)</span>") . "<br>";
+
+$dns = dns_get_record($db_host, DNS_A);
+echo "dns_get_record(): <pre>" . print_r($dns, true) . "</pre>";
+
+// B. TCP Connection Check (Raw)
+echo "<h3>B. Raw TCP Connection (fsockopen)</h3>";
+$connection = @fsockopen($db_host, $db_port, $errno, $errstr, 5);
+if (is_resource($connection)) {
+    echo "<span style='color:green'>SUCCESS: Connected to $db_host:$db_port</span><br>";
+    fclose($connection);
 }
 else {
-    echo "<span style='color:red'>RESOLUTION FAILED (returned hostname)</span><br>";
+    echo "<span style='color:red'>FAILURE: Could not connect. Error $errno: $errstr</span><br>";
 }
 
+// C. PDO Check
+echo "<h3>C. PDO Connection</h3>";
 require_once 'config/db.php'; // This might fail if paths are wrong, but we'll see error
 
 try {
