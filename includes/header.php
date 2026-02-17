@@ -3,7 +3,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 // Define base URL to handle relative paths correctly
-$base_url = 'http://localhost/blood_app';
+// Define base URL to handle relative paths correctly
+$base_url = '';
+if (isset($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false)) {
+    $base_url = '/blood_app';
+}
 
 ?>
 <!DOCTYPE html>
@@ -14,6 +18,7 @@ $base_url = 'http://localhost/blood_app';
     <title>Blood Donation Management System</title>
     <link rel="stylesheet" href="<?php echo $base_url; ?>/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
