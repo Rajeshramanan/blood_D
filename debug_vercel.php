@@ -24,6 +24,17 @@ else {
 // 3. Database Connection Test
 echo "<h2>3. Database Connection</h2>";
 
+$db_host = trim(getenv('DB_HOST') ?: 'localhost');
+echo "DB_HOST Env Var: " . ($db_host ? "SET (Length: " . strlen($db_host) . ")" : "NOT SET") . "<br>";
+echo "Resolving Host '$db_host': ";
+$ip = gethostbyname($db_host);
+if ($ip !== $db_host) {
+    echo "<span style='color:green'>RESOLVED to $ip</span><br>";
+}
+else {
+    echo "<span style='color:red'>RESOLUTION FAILED (returned hostname)</span><br>";
+}
+
 require_once 'config/db.php'; // This might fail if paths are wrong, but we'll see error
 
 try {
