@@ -14,7 +14,7 @@ $options = [
 
 // If running in production (not localhost), assume SSL is needed for cloud DB
 if ($host !== 'localhost' && $host !== '127.0.0.1') {
-    $options[PDO::MYSQL_ATTR_SSL_CA] = true;
+    // $options[PDO::MYSQL_ATTR_SSL_CA] = 'path/to/ca.pem'; // We don't have the cert file on Vercel ephemeral
     $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false; // Disable verification for easier setup
 }
 
