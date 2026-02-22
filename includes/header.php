@@ -32,7 +32,12 @@ require_once __DIR__ . '/../config/base.php';
             <a href="<?php echo $base_url; ?>/index.php" class="logo">
                 <i class="fas fa-heartbeat"></i> <span>BDMS</span>
             </a>
-            <ul class="nav-links">
+
+            <button class="hamburger" id="hamburger-menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="nav-menu">
                 <li><a href="<?php echo $base_url; ?>/index.php">Home</a></li>
                 <li><a href="<?php echo $base_url; ?>/about.php">About</a></li>
                 <li>
