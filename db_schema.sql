@@ -8,7 +8,10 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('user', 'admin') DEFAULT 'user',
+    role ENUM('user', 'admin', 'hospital', 'blood_bank') DEFAULT 'user',
+    is_verified BOOLEAN DEFAULT FALSE,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -62,3 +65,61 @@ CREATE TABLE IF NOT EXISTS admin_logs (
 -- Hash generated using password_hash('admin123', PASSWORD_DEFAULT)
 INSERT INTO users (full_name, email, phone, password, role) VALUES 
 ('System Admin', 'admin@bloodapp.com', '0000000000', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+
+-- Blood Inventory Table (for Blood Banks)
+CREATE TABLE IF NOT EXISTS blood_inventory (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bank_id INT NOT NULL,
+    blood_group ENUM('A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-') NOT NULL,
+    units INT DEFAULT 0,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (bank_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Donations History Table
+CREATE TABLE IF NOT EXISTS donations_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    donor_id INT NOT NULL,
+    hospital_id INT NOT NULL,
+    units INT NOT NULL,
+    donation_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (donor_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (hospital_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- User Rewards Table
+CREATE TABLE IF NOT EXISTS user_rewards (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    points INT DEFAULT 0,
+    badge VARCHAR(50) DEFAULT 'Starter',
+    discount_coupons INT DEFAULT 0,
+    donation_streak INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Notifications Table
+CREATE TABLE IF NOT EXISTS notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    message TEXT NOT NULL,
+    type ENUM('system', 'urgent', 'match', 'info') DEFAULT 'info',
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Transactions / Revenue Table
+CREATE TABLE IF NOT EXISTS transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    request_id INT,
+    user_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    fee_type ENUM('platform', 'emergency_priority', 'csr', 'other') DEFAULT 'platform',
+    status ENUM('pending', 'paid', 'failed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (request_id) REFERENCES blood_requests(id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

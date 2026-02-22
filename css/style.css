@@ -5,6 +5,7 @@
     --primary-color: #e63946;
     --primary-dark: #b92b27;
     --secondary-color: #f1faee;
+    --bg-color: #f8f9fa;
     --text-color: #1d3557;
     --text-light: #457b9d;
     --white: #ffffff;
@@ -15,6 +16,18 @@
     --radius: 12px;
 }
 
+[data-theme="dark"] {
+    --primary-color: #ef476f;
+    --primary-dark: #d90429;
+    --secondary-color: #111111;
+    --bg-color: #121212;
+    --text-color: #f1f1f1;
+    --text-light: #cccccc;
+    --white: #1e1e1e;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -23,7 +36,7 @@
 }
 
 body {
-    background-color: #f8f9fa;
+    background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.7;
     display: flex;
@@ -38,8 +51,6 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    backdrop-filter: blur(10px);
-    background-color: rgba(255, 255, 255, 0.95);
 }
 
 .navbar {
@@ -184,7 +195,7 @@ header {
 }
 
 .btn-secondary:hover {
-    background: #f8f9fa;
+    background: var(--secondary-color);
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
@@ -219,7 +230,7 @@ header {
 .card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-hover);
-    border-color: rgba(230, 57, 70, 0.1);
+    border-color: var(--primary-color);
 }
 
 .card h3 {
@@ -232,7 +243,7 @@ header {
 }
 
 .card p {
-    color: #555;
+    color: var(--text-light);
     font-size: 0.95rem;
 }
 
@@ -261,11 +272,12 @@ header {
 .form-group input, .form-group select, .form-group textarea {
     width: 100%;
     padding: 0.9rem 1.2rem;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--bg-color);
     border-radius: 8px;
     font-size: 1rem;
     transition: var(--transition);
-    background-color: #f8f9fa;
+    background-color: var(--bg-color);
+    color: var(--text-color);
 }
 
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
@@ -299,11 +311,11 @@ table {
 th, td {
     padding: 1.2rem 1.5rem;
     text-align: left;
-    border-bottom: 1px solid #f1f3f5;
+    border-bottom: 1px solid var(--secondary-color);
 }
 
 th {
-    background: #f8f9fa;
+    background: var(--bg-color);
     color: var(--text-color);
     font-weight: 700;
     text-transform: uppercase;
@@ -316,7 +328,7 @@ tr:last-child td {
 }
 
 tr:hover {
-    background-color: #fafafa;
+    background-color: var(--bg-color);
 }
 
 /* Badges & Utilities */
