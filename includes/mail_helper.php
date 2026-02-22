@@ -44,7 +44,40 @@ function send_notification_email($to, $subject, $body_content)
     </html>
     ";
 
-    // Use @ to suppress warnings if mail server is not configured locally
+    // SendGrid API Integration for Vercel Serverless
+    $sendgrid_api_key = getenv('SENDGRID_API_KEY');
+    $sender_email = getenv('SENDGRID_SENDER_EMAIL') ?: 'no-reply@bloodapp.com';
+
+    if ($sendgrid_api_key) {
+        $url = 'https://api.sendgrid.com/v3/mail/send';
+        $data = [
+            'personalizations' => [
+                ['to' => [['email' => $to]]]
+            ],
+            'from' => ['email' => $sender_email, 'name' => 'Blood Donation System'],
+            'subject' => $subject,
+            'content' => [
+                ['type' => 'text/html', 'value' => $message]
+            ]
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $sendgrid_api_key,
+            'Content-Type: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return ($http_code >= 200 && $http_code < 300);
+    }
+
+    // Fallback to local PHP mail() if no API key is set (e.g. local XAMPP testing)
     return @mail($to, $subject, $message, $headers);
 }
 ?>
