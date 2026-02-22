@@ -25,31 +25,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($email) || empty($password)) {
         $error = "Please fill in all fields.";
     } else {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-        $stmt->execute(['email' => $email]);
-        $user = $stmt->fetch();
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->execute(['email' => $email]);
+            $user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password'])) {
-            if (($user['role'] == 'hospital' || $user['role'] == 'blood_bank') && !$user['is_verified']) {
-                $error = "Your account is pending verification by an Administrator.";
-            } else {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['role'] = $user['role'];
-                $_SESSION['full_name'] = $user['full_name'];
-
-                if ($user['role'] == 'admin') {
-                    header("Location: " . $base_url . "/admin/admin_dashboard.php");
-                } elseif ($user['role'] == 'hospital') {
-                    header("Location: " . $base_url . "/user/hospital_dashboard.php");
-                } elseif ($user['role'] == 'blood_bank') {
-                    header("Location: " . $base_url . "/user/blood_bank_dashboard.php");
+            if ($user && password_verify($password, $user['password'])) {
+                if (($user['role'] == 'hospital' || $user['role'] == 'blood_bank') && !$user['is_verified']) {
+                    $error = "Your account is pending verification by an Administrator.";
                 } else {
-                    header("Location: " . $base_url . "/user/dashboard.php");
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['full_name'] = $user['full_name'];
+
+                    if ($user['role'] == 'admin') {
+                        header("Location: " . $base_url . "/admin/admin_dashboard.php");
+                    } elseif ($user['role'] == 'hospital') {
+                        header("Location: " . $base_url . "/user/hospital_dashboard.php");
+                    } elseif ($user['role'] == 'blood_bank') {
+                        header("Location: " . $base_url . "/user/blood_bank_dashboard.php");
+                    } else {
+                        header("Location: " . $base_url . "/user/dashboard.php");
+                    }
+                    exit;
                 }
-                exit;
+            } else {
+                $error = "Invalid email or password.";
             }
-        } else {
-            $error = "Invalid email or password.";
+        } catch (PDOException $e) {
+            $error = "Database connection error. Please configure your cloud database environment variables. Details: " . $e->getMessage();
         }
     }
 }

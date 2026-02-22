@@ -32,35 +32,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($full_name) || empty($email) || empty($phone) || empty($password)) {
         $error = "Please fill in all fields.";
     } else {
-        // Check if email exists
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email");
-        $stmt->execute(['email' => $email]);
+        try {
+            // Check if email exists
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email");
+            $stmt->execute(['email' => $email]);
 
-        if ($stmt->rowCount() > 0) {
-            $error = "Email already registered.";
-        } else {
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("INSERT INTO users (full_name, email, phone, password, role, latitude, longitude) VALUES (:full_name, :email, :phone, :password, :role, :latitude, :longitude)");
-
-            if (
-                $stmt->execute([
-                    'full_name' => $full_name,
-                    'email' => $email,
-                    'phone' => $phone,
-                    'password' => $hashed_password,
-                    'role' => $role,
-                    'latitude' => $latitude,
-                    'longitude' => $longitude
-                ])
-            ) {
-                $success = "Registration successful! You can now <a href='login.php'>login</a>.";
-                // If hospital or blood bank, note that admin verification is needed
-                if ($role === 'hospital' || $role === 'blood_bank') {
-                    $success .= " Note: Your account requires Admin verification before full access.";
-                }
+            if ($stmt->rowCount() > 0) {
+                $error = "Email already registered.";
             } else {
-                $error = "Something went wrong. Please try again.";
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("INSERT INTO users (full_name, email, phone, password, role, latitude, longitude) VALUES (:full_name, :email, :phone, :password, :role, :latitude, :longitude)");
+
+                if (
+                    $stmt->execute([
+                        'full_name' => $full_name,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'password' => $hashed_password,
+                        'role' => $role,
+                        'latitude' => $latitude,
+                        'longitude' => $longitude
+                    ])
+                ) {
+                    $success = "Registration successful! You can now <a href='login.php'>login</a>.";
+                    // If hospital or blood bank, note that admin verification is needed
+                    if ($role === 'hospital' || $role === 'blood_bank') {
+                        $success .= " Note: Your account requires Admin verification before full access.";
+                    }
+                } else {
+                    $error = "Something went wrong. Please try again.";
+                }
             }
+        } catch (PDOException $e) {
+            $error = "Database connection error. Please configure your cloud database environment variables. Details: " . $e->getMessage();
         }
     }
 }
@@ -129,10 +133,10 @@ include 'includes/header.php';
 <script>
     // Get geolocation immediately on load if available
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
+        navigator.geolocation.getCurrentPosition(functi on (position) {
             document.getElementById('latitude').value = position.coords.latitude;
             document.getElementById('longitude').value = position.coords.longitude;
-        }, function (error) {
+        }, funct ion (error) {
             console.log("Geolocation error: " + error.message);
         });
     }
