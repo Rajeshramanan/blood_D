@@ -45,14 +45,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $domain = $_SERVER['HTTP_HOST'];
             $full_url = $protocol . "://" . $domain . $base_url;
 
-            // Create request responses and send emails
+            // Create request responses, send emails, and create in-app notifications
             $stmt_resp = $pdo->prepare("INSERT INTO request_responses (request_id, donor_id, status) VALUES (?, ?, 'Pending')");
+            $stmt_notif = $pdo->prepare("INSERT INTO notifications (user_id, message, type) VALUES (?, ?, 'urgent')");
 
             foreach ($donors as $donor) {
-                // 1. Create DB record
+                // 1. Create DB record for the blood request response
                 $stmt_resp->execute([$request_id, $donor['user_id']]);
 
-                // 2. Send Email Notification
+                // 2. Create In-App Notification Record
+                $notif_msg = "URGENT: $hospital needs $units units of $blood_group blood. Please check your Pending Requests.";
+                $stmt_notif->execute([$donor['user_id'], $notif_msg]);
+
+                // 3. Send Email Notification
                 $subject = "URGENT: Blood Request for " . $blood_group;
                 $message_body = "
                     <p>Hello <strong>" . htmlspecialchars($donor['full_name']) . "</strong>,</p>
