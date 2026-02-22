@@ -15,7 +15,7 @@ $donations = $stmt->fetchAll();
 
 // Also check for requests they responded to
 $stmt2 = $pdo->prepare("
-    SELECT r.blood_group, r.urgency, r.hospital_name, r.location, r.contact_number, rr.status, rr.responded_at
+    SELECT r.blood_group, r.urgency, r.hospital_name, r.location, r.contact_number, rr.status, rr.responded_at, rr.request_id
     FROM request_responses rr
     JOIN blood_requests r ON rr.request_id = r.id
     WHERE rr.donor_id = ?
@@ -91,8 +91,24 @@ include __DIR__ . '/../includes/header.php';
                                 </td>
                                 <td><?php echo $res['blood_group']; ?></td>
                                 <td>
-                                    <span
-                                        class="badge badge-<?php echo strtolower($res['status']); ?>"><?php echo $res['status']; ?></span>
+                                    <?php if ($res['status'] === 'Pending'): ?>
+                                        <form action="respond_request.php" method="POST"
+                                            style="display:inline-block; margin-right:5px;">
+                                            <input type="hidden" name="request_id" value="<?php echo $res['request_id']; ?>">
+                                            <input type="hidden" name="action" value="Accepted">
+                                            <button type="submit" class="btn btn-primary"
+                                                style="padding: 0.2rem 0.5rem; font-size: 0.8rem; background-color: #28a745;">Accept</button>
+                                        </form>
+                                        <form action="respond_request.php" method="POST" style="display:inline-block;">
+                                            <input type="hidden" name="request_id" value="<?php echo $res['request_id']; ?>">
+                                            <input type="hidden" name="action" value="Rejected">
+                                            <button type="submit" class="btn btn-secondary"
+                                                style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Reject</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <span
+                                            class="badge badge-<?php echo strtolower($res['status']); ?>"><?php echo $res['status']; ?></span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <?php
