@@ -1,7 +1,7 @@
 <?php
 
-require_once '../config/db.php';
-require_once '../config/base.php';
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/base.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $stmt->fetch();
 }
 
-include '../includes/header.php';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="form-container">
@@ -130,4 +130,4 @@ include '../includes/header.php';
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

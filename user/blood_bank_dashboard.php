@@ -1,6 +1,6 @@
 <?php
-require_once '../config/db.php';
-require_once '../config/base.php';
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/base.php';
 session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'blood_bank') {
@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'blood_bank') {
     exit;
 }
 
-include '../includes/header.php';
+include __DIR__ . '/../includes/header.php';
 
 $user_id = $_SESSION['user_id'];
 
@@ -55,4 +55,4 @@ $available_groups = $stmt->fetchColumn();
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

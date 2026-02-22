@@ -1,8 +1,8 @@
 
 <?php
 
-require_once '../config/db.php';
-require_once '../config/base.php';
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/base.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -25,7 +25,7 @@ $stmt2 = $pdo->prepare("
 $stmt2->execute([$_SESSION['user_id']]);
 $responses = $stmt2->fetchAll();
 
-include '../includes/header.php';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container">
@@ -92,4 +92,4 @@ endif; ?>
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -1,7 +1,7 @@
 <?php
 
-require_once '../config/db.php';
-require_once '../config/base.php';
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/base.php';
 session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-include '../includes/header.php';
+include __DIR__ . '/../includes/header.php';
 
 // Fetch Totals
 $total_users = $pdo->query("SELECT COUNT(*) FROM users WHERE role='user'")->fetchColumn();
@@ -59,4 +59,4 @@ $pending_institutions = $pdo->query("SELECT COUNT(*) FROM users WHERE role IN ('
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

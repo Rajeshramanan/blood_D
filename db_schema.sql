@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS admin_logs (
 
 -- Insert Default Admin (Password: admin123)
 -- Hash generated using password_hash('admin123', PASSWORD_DEFAULT)
-INSERT INTO users (full_name, email, phone, password, role) VALUES 
+INSERT IGNORE INTO users (full_name, email, phone, password, role) VALUES 
 ('System Admin', 'admin@bloodapp.com', '0000000000', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
 
 -- Blood Inventory Table (for Blood Banks)

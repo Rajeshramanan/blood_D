@@ -30,15 +30,18 @@ try {
         die("Error: Could not read $sqlFile\n");
     }
 
-    echo "Importing schema from $sqlFile...\n";
+    // Strip out the custom database creation so Aiven uses the defaultdb we connected to
+    $sql = str_replace("CREATE DATABASE IF NOT EXISTS blood_donation_db;", "", $sql);
+    $sql = str_replace("USE blood_donation_db;", "", $sql);
+
+    echo "Importing schema from $sqlFile into defaultdb...\n";
 
     // Execute multiple statements
     $pdo->exec($sql);
 
     echo "Schema imported successfully!\n";
 
-}
-catch (\PDOException $e) {
+} catch (\PDOException $e) {
     echo "Connection failed: " . $e->getMessage() . "\n";
     echo "Code: " . $e->getCode() . "\n";
     if ($e->getCode() == 1045) {
