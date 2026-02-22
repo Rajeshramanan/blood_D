@@ -1,29 +1,21 @@
 <?php
-
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/base.php';
 session_start();
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: " . $base_url . "/login.php");
     exit;
 }
-
-// Handle Status Update
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['request_id']) && isset($_POST['status'])) {
     $stmt = $pdo->prepare("UPDATE blood_requests SET status = ? WHERE id = ?");
     $stmt->execute([$_POST['status'], $_POST['request_id']]);
 }
-
-// Check for Delete
 if (isset($_GET['delete_id'])) {
     $stmt = $pdo->prepare("DELETE FROM blood_requests WHERE id = ?");
     $stmt->execute([$_GET['delete_id']]);
     header("Location: manage_requests.php");
     exit;
 }
-
-// Fetch Requests
 $stmt = $pdo->prepare("
     SELECT br.*, u.full_name, u.phone 
     FROM blood_requests br
@@ -32,10 +24,8 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute();
 $requests = $stmt->fetchAll();
-
 include __DIR__ . '/../includes/header.php';
 ?>
-
 <div class="container">
     <h2>Manage Blood Requests</h2>
     <div class="table-responsive mt-2">
@@ -94,5 +84,4 @@ endforeach; ?>
         </table>
     </div>
 </div>
-
 <?php include __DIR__ . '/../includes/footer.php'; ?>

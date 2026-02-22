@@ -2,16 +2,11 @@
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/base.php';
 session_start();
-
 if (!isset($_SESSION['user_id'])) {
     header("Location: " . $base_url . "/login.php");
     exit;
 }
-
 $user_id = $_SESSION['user_id'];
-
-// Simulation of receiving an alert
-// For testing, insert a fake alert if URL has ?simulate=1
 if (isset($_GET['simulate']) && $_GET['simulate'] == 1) {
     if ($_SESSION['role'] === 'user') {
         $stmt = $pdo->prepare("INSERT INTO notifications (user_id, message, type) VALUES (?, ?, 'urgent')");
@@ -23,25 +18,18 @@ if (isset($_GET['simulate']) && $_GET['simulate'] == 1) {
     header("Location: notifications.php");
     exit;
 }
-
-// Mark all as read when visited
 $stmt = $pdo->prepare("UPDATE notifications SET is_read = TRUE WHERE user_id = ? AND is_read = FALSE");
 $stmt->execute([$user_id]);
-
-// Fetch alerts
 $stmt = $pdo->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->execute([$user_id]);
 $notifications = $stmt->fetchAll();
-
 include __DIR__ . '/../includes/header.php';
 ?>
-
 <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>My Notifications & Alerts</h2>
         <a href="?simulate=1" class="btn btn-secondary">Simulate Alert</a>
     </div>
-
     <div class="card" style="margin-top: 20px;">
         <?php if (count($notifications) > 0): ?>
             <ul style="list-style-type: none; padding: 0;">
@@ -77,5 +65,4 @@ include __DIR__ . '/../includes/header.php';
         <a href="<?php echo $dash; ?>" class="btn btn-secondary">Back to Dashboard</a>
     </div>
 </div>
-
 <?php include __DIR__ . '/../includes/footer.php'; ?>

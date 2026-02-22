@@ -1,7 +1,5 @@
 CREATE DATABASE IF NOT EXISTS blood_donation_db;
 USE blood_donation_db;
-
--- Users Table
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
@@ -14,8 +12,6 @@ CREATE TABLE IF NOT EXISTS users (
     longitude DECIMAL(11, 8),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- Donation Profiles Table
 CREATE TABLE IF NOT EXISTS donation_profiles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -26,8 +22,6 @@ CREATE TABLE IF NOT EXISTS donation_profiles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
--- Blood Requests Table
 CREATE TABLE IF NOT EXISTS blood_requests (
     id INT AUTO_INCREMENT PRIMARY KEY,
     requester_id INT NOT NULL,
@@ -36,13 +30,12 @@ CREATE TABLE IF NOT EXISTS blood_requests (
     urgency ENUM('Normal', 'Urgent', 'Emergency') NOT NULL,
     hospital_name VARCHAR(150) NOT NULL,
     location VARCHAR(200) NOT NULL,
+    state VARCHAR(100) NOT NULL,
     contact_number VARCHAR(20) NOT NULL,
     status ENUM('Pending', 'Accepted', 'Completed', 'Cancelled') DEFAULT 'Pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (requester_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
--- Request Responses Table (Matching Donors)
 CREATE TABLE IF NOT EXISTS request_responses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     request_id INT NOT NULL,
@@ -52,8 +45,6 @@ CREATE TABLE IF NOT EXISTS request_responses (
     FOREIGN KEY (request_id) REFERENCES blood_requests(id) ON DELETE CASCADE,
     FOREIGN KEY (donor_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
--- Admin Logs Table
 CREATE TABLE IF NOT EXISTS admin_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     admin_id INT NOT NULL,
@@ -61,13 +52,8 @@ CREATE TABLE IF NOT EXISTS admin_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
--- Insert Default Admin (Password: admin123)
--- Hash generated using password_hash('admin123', PASSWORD_DEFAULT)
 INSERT IGNORE INTO users (full_name, email, phone, password, role) VALUES 
 ('System Admin', 'admin@bloodapp.com', '0000000000', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
-
--- Blood Inventory Table (for Blood Banks)
 CREATE TABLE IF NOT EXISTS blood_inventory (
     id INT AUTO_INCREMENT PRIMARY KEY,
     bank_id INT NOT NULL,
@@ -76,8 +62,6 @@ CREATE TABLE IF NOT EXISTS blood_inventory (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (bank_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
--- Donations History Table
 CREATE TABLE IF NOT EXISTS donations_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     donor_id INT NOT NULL,
@@ -88,8 +72,6 @@ CREATE TABLE IF NOT EXISTS donations_history (
     FOREIGN KEY (donor_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (hospital_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
--- User Rewards Table
 CREATE TABLE IF NOT EXISTS user_rewards (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -100,8 +82,6 @@ CREATE TABLE IF NOT EXISTS user_rewards (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
--- Notifications Table
 CREATE TABLE IF NOT EXISTS notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -111,8 +91,6 @@ CREATE TABLE IF NOT EXISTS notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
--- Transactions / Revenue Table
 CREATE TABLE IF NOT EXISTS transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     request_id INT,

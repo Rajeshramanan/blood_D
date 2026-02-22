@@ -1,19 +1,10 @@
 <?php
-/**
- * Send an HTML email notification
- * 
- * @param string $to Recipient email
- * @param string $subject Email subject
- * @param string $body_content HTML content of the email
- * @return bool True if mail accepted for delivery, False otherwise
- */
 function send_notification_email($to, $subject, $body_content)
 {
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
     $headers .= "From: Blood Donation App <no-reply@bloodapp.com>" . "\r\n";
     $headers .= "X-Mailer: PHP/" . phpversion();
-
     $message = "
     <!DOCTYPE html>
     <html>
@@ -43,11 +34,8 @@ function send_notification_email($to, $subject, $body_content)
     </body>
     </html>
     ";
-
-    // SendGrid API Integration for Vercel Serverless
     $sendgrid_api_key = getenv('SENDGRID_API_KEY');
     $sender_email = getenv('SENDGRID_SENDER_EMAIL') ?: 'no-reply@bloodapp.com';
-
     if ($sendgrid_api_key) {
         $url = 'https://api.sendgrid.com/v3/mail/send';
         $data = [
@@ -60,7 +48,6 @@ function send_notification_email($to, $subject, $body_content)
                 ['type' => 'text/html', 'value' => $message]
             ]
         ];
-
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -69,15 +56,11 @@ function send_notification_email($to, $subject, $body_content)
             'Content-Type: application/json'
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
         $response = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-
         return ($http_code >= 200 && $http_code < 300);
     }
-
-    // Fallback to local PHP mail() if no API key is set (e.g. local XAMPP testing)
     return @mail($to, $subject, $message, $headers);
 }
 ?>

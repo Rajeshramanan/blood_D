@@ -5,12 +5,10 @@
 <script>
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeIcon = document.getElementById('theme-icon');
-
     // Update icon based on current theme on load
     if (document.documentElement.getAttribute('data-theme') === 'dark') {
         if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
     }
-
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
             let currentTheme = document.documentElement.getAttribute('data-theme');
@@ -25,11 +23,9 @@
             }
         });
     }
-
     // Mobile Navbar Toggle Logic
     const hamburgerBtn = document.getElementById('hamburger-menu');
     const navMenu = document.getElementById('nav-menu');
-
     if (hamburgerBtn && navMenu) {
         hamburgerBtn.addEventListener('click', () => {
             navMenu.classList.toggle('active');
@@ -43,5 +39,4 @@
     }
 </script>
 </body>
-
 </html>

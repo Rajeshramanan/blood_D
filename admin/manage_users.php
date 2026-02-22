@@ -1,29 +1,21 @@
 <?php
-
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/base.php';
 session_start();
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: " . $base_url . "/login.php");
     exit;
 }
-
-// Handle Delete
 if (isset($_GET['delete_id'])) {
     $stmt = $pdo->prepare("DELETE FROM users WHERE id = ? AND role != 'admin'");
     $stmt->execute([$_GET['delete_id']]);
     header("Location: manage_users.php");
     exit;
 }
-
-// Fetch Users
 $stmt = $pdo->query("SELECT id, full_name, email, phone, role, created_at FROM users WHERE role = 'user' ORDER BY created_at DESC");
 $users = $stmt->fetchAll();
-
 include __DIR__ . '/../includes/header.php';
 ?>
-
 <div class="container">
     <h2>Manage Users</h2>
     <div class="table-responsive mt-2">
@@ -56,5 +48,4 @@ endforeach; ?>
         </table>
     </div>
 </div>
-
 <?php include __DIR__ . '/../includes/footer.php'; ?>

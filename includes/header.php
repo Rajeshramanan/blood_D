@@ -2,14 +2,10 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// Define base URL to handle relative paths correctly
-// Define base URL to handle relative paths correctly
 require_once __DIR__ . '/../config/base.php';
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,18 +21,15 @@ require_once __DIR__ . '/../config/base.php';
         }
     </script>
 </head>
-
 <body>
     <header>
         <nav class="navbar">
             <a href="<?php echo $base_url; ?>/index.php" class="logo">
                 <i class="fas fa-heartbeat"></i> <span>BDMS</span>
             </a>
-
             <button class="hamburger" id="hamburger-menu">
                 <i class="fas fa-bars"></i>
             </button>
-
             <ul class="nav-links" id="nav-menu">
                 <li><a href="<?php echo $base_url; ?>/index.php">Home</a></li>
                 <li><a href="<?php echo $base_url; ?>/about.php">About</a></li>
@@ -46,7 +39,6 @@ require_once __DIR__ . '/../config/base.php';
                         <i class="fas fa-moon" id="theme-icon"></i>
                     </button>
                 </li>
-
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <?php if ($_SESSION['role'] === 'admin'): ?>
                         <li><a href="<?php echo $base_url; ?>/admin/admin_dashboard.php">Dashboard</a></li>
@@ -57,7 +49,6 @@ require_once __DIR__ . '/../config/base.php';
                     <?php else: ?>
                         <li><a href="<?php echo $base_url; ?>/user/dashboard.php">Dashboard</a></li>
                     <?php endif; ?>
-
                     <li><a href="<?php echo $base_url; ?>/user/notifications.php" title="Notifications"><i
                                 class="fas fa-bell"></i></a></li>
                     <li><a href="<?php echo $base_url; ?>/logout.php" class="btn-nav btn-login">Logout</a></li>

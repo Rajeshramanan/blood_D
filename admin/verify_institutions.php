@@ -2,15 +2,12 @@
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/base.php';
 session_start();
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: " . $base_url . "/login.php");
     exit;
 }
-
 $success = '';
 $error = '';
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     $inst_id = (int) $_POST['user_id'];
     if ($_POST['action'] === 'approve') {
@@ -29,20 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         }
     }
 }
-
-// Fetch pending institutions
 $stmt = $pdo->query("SELECT * FROM users WHERE role IN ('hospital', 'blood_bank') AND is_verified = FALSE ORDER BY created_at DESC");
 $pending_institutions = $stmt->fetchAll();
-
 include __DIR__ . '/../includes/header.php';
 ?>
-
 <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Verify Institutions</h2>
         <a href="admin_dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
     </div>
-
     <?php if ($success): ?>
         <p class="text-center" style="color: green;">
             <?php echo $success; ?>
@@ -53,7 +45,6 @@ include __DIR__ . '/../includes/header.php';
             <?php echo $error; ?>
         </p>
     <?php endif; ?>
-
     <div class="table-container mt-2">
         <table class="table">
             <thead>
@@ -110,5 +101,4 @@ include __DIR__ . '/../includes/header.php';
         </table>
     </div>
 </div>
-
 <?php include __DIR__ . '/../includes/footer.php'; ?>

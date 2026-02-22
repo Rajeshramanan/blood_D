@@ -1,24 +1,18 @@
 <?php
-
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/base.php';
 session_start();
-
 if (!isset($_SESSION['user_id'])) {
     header("Location: " . $base_url . "/login.php");
     exit;
 }
-
 $stmt = $pdo->prepare("SELECT * FROM blood_requests WHERE requester_id = ? ORDER BY created_at DESC");
 $stmt->execute([$_SESSION['user_id']]);
 $requests = $stmt->fetchAll();
-
 include __DIR__ . '/../includes/header.php';
 ?>
-
 <div class="container">
     <h2>My Blood Requests</h2>
-
     <?php if (count($requests) > 0): ?>
         <div class="table-responsive mt-2">
             <table>
@@ -60,7 +54,6 @@ include __DIR__ . '/../includes/header.php';
                                 ");
                                 $stmt2->execute([$req['id']]);
                                 $accepted_donors = $stmt2->fetchAll();
-
                                 if (count($accepted_donors) > 0) {
                                     echo "<ul style='margin:0; padding-left:20px; text-align:left;'>";
                                     foreach ($accepted_donors as $d) {
@@ -97,5 +90,4 @@ include __DIR__ . '/../includes/header.php';
         <?php
     endif; ?>
 </div>
-
 <?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -1,5 +1,4 @@
 <?php include 'includes/header.php'; ?>
-
 <div class="hero">
     <h1>Save Lives Today</h1>
     <p>Your donation can save up to 3 lives. Be a hero, donate blood.</p>
@@ -15,7 +14,6 @@ else: ?>
 endif; ?>
     </div>
 </div>
-
 <div class="container">
     <div class="card-grid">
         <div class="card">
@@ -35,5 +33,4 @@ endif; ?>
         </div>
     </div>
 </div>
-
 <?php include 'includes/footer.php'; ?>
