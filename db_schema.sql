@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS blood_requests (
     urgency ENUM('Normal', 'Urgent', 'Emergency') NOT NULL,
     hospital_name VARCHAR(150) NOT NULL,
     location VARCHAR(200) NOT NULL,
+    contact_number VARCHAR(20) NOT NULL,
     status ENUM('Pending', 'Accepted', 'Completed', 'Cancelled') DEFAULT 'Pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (requester_id) REFERENCES users(id) ON DELETE CASCADE

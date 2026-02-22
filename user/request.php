@@ -19,13 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $urgency = $_POST['urgency'];
     $hospital = trim($_POST['hospital']);
     $location = trim($_POST['location']);
+    $contact_number = trim($_POST['contact_number']);
 
     if ($units < 1) {
         $error = "Units must be at least 1.";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO blood_requests (requester_id, blood_group, units_required, urgency, hospital_name, location, status) VALUES (?, ?, ?, ?, ?, ?, 'Pending')");
+        $stmt = $pdo->prepare("INSERT INTO blood_requests (requester_id, blood_group, units_required, urgency, hospital_name, location, contact_number, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending')");
 
-        if ($stmt->execute([$_SESSION['user_id'], $blood_group, $units, $urgency, $hospital, $location])) {
+        if ($stmt->execute([$_SESSION['user_id'], $blood_group, $units, $urgency, $hospital, $location, $contact_number])) {
             $request_id = $pdo->lastInsertId();
 
             // MATCHING ALGORITHM OVERRIDE: Notify ALL available donors globally
@@ -65,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <p>
                         <strong>Blood Group Needed:</strong> $blood_group<br>
                         <strong>Hospital:</strong> " . htmlspecialchars($hospital) . "<br>
-                        <strong>Location:</strong> " . htmlspecialchars($location) . "<br>
+                        <strong>Location/Address:</strong> " . htmlspecialchars($location) . "<br>
+                        <strong>Contact Number:</strong> " . htmlspecialchars($contact_number) . "<br>
                         <strong>Urgency:</strong> <span class='highlight'>$urgency</span>
                     </p>
                     <p>Please log in to your account to accept or decline this request.</p>
@@ -138,6 +140,11 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-group">
                 <label>Location / Address</label>
                 <textarea name="location" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Contact/Phone Number</label>
+                <input type="tel" name="contact_number" required>
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Request</button>
